@@ -1,59 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+
 //import axios from "axios";
 import { FaCheck } from "react-icons/fa";
 
-export default function FormValidation() {
-  const [member, setMember] = useState({
-    email: "",
-    endpoint: "",
-  });
-  const [serverResponse, setServerResponse] = useState("");
-
-  const handleChange = (evt) => {
-    setMember((member) => ({
-      ...member,
-      [evt.target.name]: evt.target.value,
-    }));
-  };
-
-  async function submitHandler(evt) {
-    evt.preventDefault();
-    try {
-      if (member.endpoint === "" || member.email === "") {
-        return setServerResponse("Email and endpoint are required!");
-      } else {
-        //used the fetch method, easier to handle error messages from the server
-        console.log(member);
-        // const response = await fetch("http://localhost:3000/api/users/login", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(member),
-        // });
-
-        /*const response = await axios.post(
-        "http://localhost:3000/api/users/login",
-        member
-      );*/
-
-        // const result = await response.json();
-        // if (response.status === 200) {
-        //   router.push("/profile");
-        //   ctx.onLogIn();
-        // } else {
-        //   setServerResponse(result.message);
-        // }
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Login failed");
-    }
-  }
-
+export default function FormValidation({
+  member,
+  handleChange,
+  submitHandler,
+  serverResponse,
+}) {
   return (
     <div className="w-full max-w-2xl md:max-w-xl mx-auto px-4 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="border-none bg-blue-50 shadow-lg rounded-xl  p-6">
@@ -66,7 +23,7 @@ export default function FormValidation() {
           </p>
         </div>
         <p className="text-muted-foreground mt-4 text-md leading-6">
-          Verify your service api and security endpoints in seconds.
+          Verify api endpoints and services in seconds.
         </p>
         <form
           onSubmit={submitHandler}
@@ -100,16 +57,61 @@ export default function FormValidation() {
               placeholder="https://api.example.com/v1/health"
               className="bg-transparent border-2 border-gray-400 px-4 py-2 rounded-lg w-full max-w-lg"
             />
+             <p className="text-xs text-gray-500 mt-2">
+            <span className="text-sky-950">endpoint:</span> https://icbxi96m01.execute-api.eu-west-1.amazonaws.com/prod/sort
+          </p>
           </div>
+         
 
           <div className="flex justify-center gap-4 mb-8 mt-4 w-full">
-            <button type="submit" 
-                  className="flex-1 rounded-2xl h-12 cursor-pointer bg-sky-900 hover:bg-primary/90 w-full max-w-xs text-white font-semibold transition-all shadow-lg shadow-primary/20"
-                >
+            <button
+              type="submit"
+              className="flex-1 rounded-2xl h-12 cursor-pointer bg-sky-900 hover:bg-primary/90 w-full max-w-xs text-white font-semibold transition-all shadow-lg shadow-primary/20"
+            >
               Validate
             </button>
           </div>
         </form>
+        <div className="w-full max-w-lg mx-auto">
+          {serverResponse.message && (
+            <>
+              <div className="flex gap-10">
+                <FaCheck
+                  className={`text-2xl mb-4 ${serverResponse.status === 200 ? "text-green-500" : "text-transparent"}`}
+                />
+                <p
+                  className={`text-lg font-semibold mb-2 ${serverResponse.status === 200 ? "text-green-700" : "text-red-700"}`}
+                >
+                  {serverResponse.status === 200
+                    ? "Working url"
+                    : "Url has an error"}
+                </p>
+              </div>
+              <div className="flex gap-10">
+                <FaCheck
+                  className={`text-2xl mb-4 ${serverResponse.beginsWithHttp ? "text-green-500" : "text-transparent"}`}
+                />
+                <p
+                  className={`text-lg font-semibold mb-2 ${serverResponse.beginsWithHttp ? "text-green-700" : "text-red-700"}`}
+                >
+                  {serverResponse.beginsWithHttp
+                    ? "Url begins with http(s)://"
+                    : "Something went wrong with the url"}
+                </p>
+              </div>
+              <div
+                className={`p-4 mt-5  rounded-lg ${serverResponse.status === 200 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+              >
+                <p className="font-semibold">{serverResponse.message}</p>
+                {serverResponse.body && (
+                  <pre className="text-sm mt-2 overflow-auto">
+                    {JSON.stringify(serverResponse.body, null, 2)}
+                  </pre>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
