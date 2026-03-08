@@ -61,7 +61,7 @@ export default function FormValidation() {
           <div className="p-2 bg-blue-100 rounded-lg">
             <FaCheck className="text-green-500 text-2xl" />
           </div>
-          <p className="text-3xl font-headline font-bold text-sky-900">
+          <p className="text-xl font-headline font-bold text-sky-900 sm:text-2xl">
             API Validator
           </p>
         </div>
